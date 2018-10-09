@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Or>
+            <Bug code="OBL,USELESS_STRING, FS, BC, STCAL, UPM, IMSE, SS, VO, ST, ODR, OS, SBSC, LI"/>
+            <Bug code="SIC" pattern="static inner class"/>
+        </Or>
+        <Not>
+            <Or>
+                <Package name="com.santaba.agent.netflow2"/>
+                <Package name="com.santaba.agent.util.perfTest"/>
+
+                <Bug code="FS" partten="string should use %n rather than \n"/>
+                <Bug code="Eq" partten="checks for incompatible operand"/>
+                <Bug code="BC" partten="instanceof will always return false"/>
+                <!-- spotbugs has not support try-with grammer yet. maybe fix it later https://github.com/spotbugs/spotbugs/issues/493 -->
+                <Bug code="OBL" partten="Method may fail to clean up stream or resource "/>
+            </Or>
+        </Not>
+    </Match>
+</FindBugsFilter>

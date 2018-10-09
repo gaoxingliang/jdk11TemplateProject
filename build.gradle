@@ -1,0 +1,134 @@
+///////////////////////////////////////////////////////////////////////////////////////
+//
+//                 Gradle Template Summary
+//
+//   Frequently Used Command:
+//      [ gradle ]          Default task. same with 'gradle build'.
+//      [ gradle build ]    Compile/test your code, and create a war file containing your main classes and resources.
+//
+////////////////////////////////////////////////////////////////////////////////////////
+
+//Definition apply plugin
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'maven'
+
+//--------------------------------- Based setting  for current project ---------------------------------
+
+// Definition sourceCompatibility and targetCompatibility.
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+buildscript {
+    ext {
+        MODULE                      = "JDK11TemplateProject"
+        MAVEN_GROUP_ID              = "JDK11TemplateProject"
+        MAVEN_ARTIFACT_ID           = "JDK11TemplateProject"
+        MAVEN_VERSION               = "0.1"
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username MAVEN_REPO_USERNAME
+                password MAVEN_REPO_PASSWORD
+            }
+            url REPOSITORRY_URL
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
+// Access maven center.
+repositories {
+    maven {
+        credentials {
+            username MAVEN_REPO_USERNAME
+            password MAVEN_REPO_PASSWORD
+        }
+        url REPOSITORRY_URL
+    }
+}
+
+
+// Definition source which should include.
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+
+    test {
+        java {
+            srcDir 'test/java'
+        }
+        resources {
+            srcDir 'test/resources'
+        }
+    }
+}
+
+
+//--------------------------------- Dependencies definition ---------------------------------
+
+dependencies {
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+
+    // Include non maven standard layout file into war
+    testCompile(
+            "junit:junit:4.11",
+    )
+}
+
+// Define manifest
+ext.sharedManifest = manifest {
+    attributes(
+            'Modlue': "${MODULE}",
+            'Implementation-Title': "${project.name}",
+            'Built-Date': new Date().getDateTimeString(),
+            'Built-With': "gradle-${project.getGradle().getGradleVersion()}, groovy-${GroovySystem.getVersion()}",
+            'Created-By': 'Java ' + System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')'
+    )
+}
+
+
+//--------------------------------- Specific Tasks ---------------------------------
+/*
+*  Override jar task addition attributes
+*/
+jar {
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+
+defaultTasks 'clean','test','jar'
+
+task build (overwrite: true ) {
+    dependsOn = ['clean','test','jar']
+
+    test.mustRunAfter clean
+    jar.mustRunAfter test
+}
+
+
+//Define the test task
+test {
+    ignoreFailures = true
+    reports.html.destination = file("$buildDir/test-reports")
+}
+
+
+task createJavaProject << {
+    sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs()}
+}
+
