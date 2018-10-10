@@ -19,6 +19,15 @@ apply plugin: 'maven'
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
+compileJava {
+    options.compilerArgs += ["--add-exports=java.management/sun.management=ALL-UNNAMED"]
+    options.compilerArgs += ["--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED"]
+}
+
+compileTestJava {
+    options.compilerArgs += ["--add-exports=java.management/sun.management=ALL-UNNAMED"]
+}
+
 buildscript {
     ext {
         MODULE                      = "JDK11TemplateProject"
@@ -27,20 +36,24 @@ buildscript {
         MAVEN_VERSION               = "0.1"
     }
 
+    repositories { mavenCentral() }
+
     repositories {
         maven {
-            credentials {
-                username MAVEN_REPO_USERNAME
-                password MAVEN_REPO_PASSWORD
-            }
-            url REPOSITORRY_URL
+            url "https://plugins.gradle.org/m2/"
         }
     }
-
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
+
+
+    dependencies {
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.4"
+    }
 }
+
+apply plugin: "com.github.spotbugs"
 
 // Access maven center.
 repositories {
@@ -110,13 +123,10 @@ jar {
 }
 
 
-defaultTasks 'clean','test','jar'
+defaultTasks 'clean','spotbugsMain','test','jar'
 
 task build (overwrite: true ) {
-    dependsOn = ['clean','test','jar']
-
-    test.mustRunAfter clean
-    jar.mustRunAfter test
+    dependsOn = ['clean','spotbugsMain','test','jar']
 }
 
 
@@ -124,6 +134,7 @@ task build (overwrite: true ) {
 test {
     ignoreFailures = true
     reports.html.destination = file("$buildDir/test-reports")
+    jvmArgs "--add-exports=java.management/sun.management=ALL-UNNAMED"
 }
 
 
