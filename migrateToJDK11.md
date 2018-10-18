@@ -23,6 +23,28 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 ```
 
+#### Note 
+you may got error when has <font color="red">inner class in test case</font>:
+```
+    Caused by: java.lang.UnsupportedOperationException
+
+            at org.objectweb.asm.ClassVisitor.visitNestMemberExperimental(ClassVisitor.java:248)
+
+            at org.objectweb.asm.ClassReader.accept(ClassReader.java:651)
+
+            at org.objectweb.asm.ClassReader.accept(ClassReader.java:391)
+
+            at org.gradle.api.internal.tasks.testing.detection.AbstractTestFrameworkDetector.classVisitor(AbstractTestFrameworkDetector.java:124)
+
+            ... 66 more
+```
+
+```
+sourceCompatibility = JavaVersion.VERSION_1_10
+targetCompatibility = JavaVersion.VERSION_1_10
+```
+
+
 ### 3. Export some optional old depracated api
 if you used some apis like jdk.internal.misc.SharedSecrets
 ```
