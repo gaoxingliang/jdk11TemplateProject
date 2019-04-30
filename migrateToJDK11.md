@@ -73,11 +73,21 @@ test {
 }
 ```
 
+### 5. leftShift grammar is not support
+When you found below error:
+```
+ Could not find method leftShift() for arguments [build_d5u7w4cjojjb7weuzumne60s2$_run_closure10@5655f44e] on task ':createJavaProject' of type org.gradle.api.DefaultTask.
+
+```
+you have to replace it with `doLast{}` block. check our build.gradle
+
+
 ## findbugs must be replaced with spotbugs
-with version >= 1.6.4
+with version >= 1.7.1
 ```
     dependencies {
-        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.4"
+            classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.7.1"
+            classpath "com.google.guava:guava:27.0.1-jre"
     }
     
     
@@ -86,6 +96,20 @@ with version >= 1.6.4
 
 ```
 Spotbugs now has a [bug](https://github.com/spotbugs/spotbugs/issues/493) in try-with resource grammar.
+
+
+# How to build jre base on jdk
+Here we need to use [jlink](https://docs.oracle.com/javase/9/tools/jlink.htm) to build jre.<br>
+and we used the [AMAZON JDK](https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/downloads-list.html)<br>
+The command will like below:
+```
+/bin/jlink --module-path amazon-corretto-11.0.3.7.1-linux-x64/jmods/ --compress=2 --no-header-files --output generated  --add-modules jdk.zipfs,jdk.xml.dom,jdk.unsupported,jdk.unsupported.desktop,jdk.security.jgss,jdk.security.auth,jdk.sctp,jdk.scripting.nashorn.shell,jdk.scripting.nashorn,jdk.rmic,jdk.pack,jdk.net,jdk.naming.rmi,jdk.naming.dns,jdk.management,jdk.management.jfr,jdk.management.agent,jdk.localedata,jdk.jstatd,jdk.jsobject,jdk.jshell,jdk.jlink,jdk.jfr,jdk.jdwp.agent,jdk.jdi,jdk.jdeps,jdk.jconsole,jdk.jcmd,jdk.javadoc,jdk.jartool,jdk.internal.vm.compiler.management,jdk.internal.vm.compiler,jdk.internal.vm.ci,jdk.internal.opt,jdk.internal.le,jdk.internal.jvmstat,jdk.internal.ed,jdk.httpserver,jdk.hotspot.agent,jdk.editpad,jdk.dynalink,jdk.crypto.ec,jdk.crypto.cryptoki,jdk.compiler,jdk.charsets,jdk.attach,jdk.aot,jdk.accessibility,java.xml,java.xml.crypto,java.transaction.xa,java.sql.rowset,java.sql,java.smartcardio,java.se,java.security.sasl,java.security.jgss,java.scripting,java.rmi,java.prefs,java.net.http,java.naming,java.management.rmi,java.management,java.logging,java.instrument,java.desktop,java.datatransfer,java.compiler,java.base,
+
+```
+I uploaded a shell to help to use to build jre base on amazon jdk.
+[prepareLinuxJre](prepareLinuxJre.sh)
+
+
 
 ## references links
 
