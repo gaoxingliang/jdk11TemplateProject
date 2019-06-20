@@ -109,6 +109,9 @@ The command will like below:
 I uploaded a shell to help to use to build jre base on amazon jdk.
 [prepareLinuxJre](prepareLinuxJre.sh)
 
+## the certificates are not preserved
+See github issue [jlink issue](https://github.com/corretto/corretto-11/issues/32).<br>
+Use below code [SignJRE](src/java/SignJRE.java) to sign it manually.
 
 
 ## references links

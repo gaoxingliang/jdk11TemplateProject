@@ -5,6 +5,10 @@ A template project using jdk 11
 ```
 ./gradlew build
 ```
+or with dependency: 
+```
+./gradlew devbuild
+```
 
 # Run
 ```
